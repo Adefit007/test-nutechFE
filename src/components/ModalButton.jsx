@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Col, Form, Modal } from "react-bootstrap";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
 import { API } from "../config/api";
 
 export default function ModalButton() {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
+  const handleClose = () => (
+    setShow(false), setMessage(null), setPreview(null)
+  );
 
   const [preview, setPreview] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -47,6 +49,10 @@ export default function ModalButton() {
       console.log(response);
       setShow(!show);
     } catch (error) {
+      if (error.message === "Request failed with status code 400") {
+        const alert = <Alert variant="danger">file max 100 kB</Alert>;
+        setMessage(alert);
+      }
       console.log(error);
     }
   });
@@ -63,6 +69,7 @@ export default function ModalButton() {
         </Button>
         <Modal show={show} onHide={handleClose}>
           <Modal.Body>
+            {message}
             <h3 className="text-center">Add Product</h3>
             <Form onSubmit={(e) => handleSubmit.mutate(e)}>
               {preview && (
@@ -85,7 +92,7 @@ export default function ModalButton() {
                 hidden
                 onChange={handleChange}
               />
-              <label className="my-3" htmlFor="upload">
+              <label className="my-3 text-primary" htmlFor="upload">
                 Upload File
               </label>
               <Form.Group>
@@ -95,6 +102,7 @@ export default function ModalButton() {
                   name="name"
                   onChange={handleChange}
                   placeholder="name"
+                  required
                 />
               </Form.Group>
               <Form.Group>

@@ -138,6 +138,7 @@ export default function ListData() {
                       width: "70px",
                       height: "70px",
                       objectFit: "cover",
+                      borderRadius: "5px",
                     }}
                     alt=""
                   />

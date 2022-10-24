@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { API } from "../config/api";
@@ -102,7 +102,7 @@ export default function ModalButtonUpdate({ item }) {
               hidden
               onChange={handleChange}
             />
-            <label className="my-3" htmlFor="upload">
+            <label className="my-3 text-primary" htmlFor="upload">
               Upload File
             </label>
             <Form.Group>
