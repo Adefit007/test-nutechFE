@@ -58,6 +58,19 @@ export default function ListData() {
     navigate("/login");
   };
 
+  const [filter, setFilter] = useState("");
+  let searchData = (e) => {
+    setFilter(e.target.value);
+  };
+
+  let dataFilter = products?.filter((item) => {
+    if (filter === "") {
+      return item;
+    } else if (item.name.toLowerCase().includes(filter.toLowerCase())) {
+      return item;
+    }
+  });
+
   return (
     <div>
       <Container>
@@ -87,6 +100,8 @@ export default function ListData() {
                 <Form.Control
                   type="search"
                   name="name"
+                  id="name"
+                  onChange={searchData.bind(this)}
                   style={{ width: "30%" }}
                 />
               </Form.Group>
@@ -113,7 +128,7 @@ export default function ListData() {
             </tr>
           </thead>
           <tbody>
-            {products?.map((item, index) => (
+            {dataFilter?.map((item, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>
@@ -124,6 +139,7 @@ export default function ListData() {
                       height: "70px",
                       objectFit: "cover",
                     }}
+                    alt=""
                   />
                 </td>
                 <td className="align-middle">{item?.name}</td>
