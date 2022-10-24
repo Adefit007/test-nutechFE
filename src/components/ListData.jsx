@@ -1,13 +1,53 @@
-import React, { useContext } from "react";
-import { Button, Card, Col, Container, Form, Table } from "react-bootstrap";
-import { useQuery } from "react-query";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Card, Container, Form, Modal, Table } from "react-bootstrap";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import icon from "../assets/iconapp.svg";
 import { API } from "../config/api";
 import { UserContext } from "../context/useContext";
+import ModalButton from "./ModalButton";
+import ModalButtonUpdate from "./ModalButtonUpdate";
 
 export default function ListData() {
   const [state, dispatch] = useContext(UserContext);
+
+  let { data: products, refetch } = useQuery("productsCache", async () => {
+    const response = await API.get("/products");
+    return response.data.data;
+  });
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [idDelete, setIdDelete] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  const handleDelete = (id) => {
+    setIdDelete(id);
+    handleShow();
+  };
+
+  const handleDeletes = () => {
+    setConfirmDelete(true);
+  };
+
+  const deleteById = useMutation(async (id) => {
+    try {
+      await API.delete("/product/" + id);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  useEffect(() => {
+    if (confirmDelete) {
+      handleClose();
+      deleteById.mutate(idDelete);
+      setConfirmDelete(null);
+    }
+  }, [confirmDelete]);
 
   let navigate = useNavigate();
 
@@ -18,12 +58,6 @@ export default function ListData() {
     navigate("/login");
   };
 
-  let { data: products, refetch } = useQuery("productsCache", async () => {
-    const response = await API.get("/products");
-    return response.data.data;
-  });
-
-  console.log(products);
   return (
     <div>
       <Container>
@@ -49,7 +83,7 @@ export default function ListData() {
           <Card.Body>
             <Form>
               <Form.Group>
-                <Form.Label>Nama Barang</Form.Label>
+                <Form.Label>Cari Nama Barang</Form.Label>
                 <Form.Control
                   type="search"
                   name="name"
@@ -59,11 +93,7 @@ export default function ListData() {
             </Form>
           </Card.Body>
         </Card>
-        <Col className="text-end">
-          <Button className="my-2 fw-bolder" style={{ width: "10%" }}>
-            Add
-          </Button>
-        </Col>
+        <ModalButton />
         <Table
           responsive
           striped
@@ -101,12 +131,47 @@ export default function ListData() {
                 <td>{item?.sellPrice}</td>
                 <td>{item?.qty}</td>
                 <td>
-                  <Button variant="warning" className="text-white me-2 pointer">
+                  <ModalButtonUpdate item={item} key={index} />
+                  {/* <Button
+                    variant="warning"
+                    style={{ width: "70px" }}
+                    className="text-white me-2 pointer"
+                  >
                     Edit
-                  </Button>
-                  <Button variant="danger" className="text-white pointer">
+                  </Button> */}
+                  <Button
+                    onClick={() => {
+                      handleDelete(item?.id);
+                    }}
+                    style={{ width: "70px" }}
+                    variant="danger"
+                    className="text-white pointer"
+                  >
                     Delete
                   </Button>
+                  <Modal show={show} onHide={handleClose} centered>
+                    <Modal.Body>
+                      <h3 className="text-center">Delete data</h3>
+                      <div className="my-4">Anda yakin menghapus data ?</div>
+                      <div className="my-3 text-end">
+                        <Button
+                          variant="danger"
+                          className="me-2"
+                          style={{ width: "100px" }}
+                          onClick={handleDeletes}
+                        >
+                          Ok
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          style={{ width: "100px" }}
+                          onClick={handleClose}
+                        >
+                          Batal
+                        </Button>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
                 </td>
               </tr>
             ))}
