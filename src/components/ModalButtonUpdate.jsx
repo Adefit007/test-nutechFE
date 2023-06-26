@@ -25,7 +25,8 @@ export default function ModalButtonUpdate({ item }) {
 
   useQuery("productCache", async () => {
     const response = await API.get("/product/" + item.id);
-    setPreview(response?.data?.data?.image);
+    setPreview(response?.data[0]?.data[0]?.image);
+    // setPreview(response?.data?.data?.image);
     setForm({
       ...form,
       name: response?.data?.data?.name,
@@ -54,8 +55,7 @@ export default function ModalButtonUpdate({ item }) {
       e.preventDefault();
 
       const formData = new FormData();
-      formData.set("image", form.image[0].name);
-      // formData.set("image", form.image[0], form.image[0].name);
+      formData.set("image", form.image[0], form.image[0].name);
       formData.set("name", form.name);
       formData.set("buyPrice", form.buyPrice);
       formData.set("sellPrice", form.sellPrice);
