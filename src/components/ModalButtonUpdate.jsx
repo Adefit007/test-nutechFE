@@ -23,18 +23,18 @@ export default function ModalButtonUpdate({ item }) {
     qty: item.qty,
   });
 
-  useQuery("productCache", async () => {
-    const response = await API.get("/product/" + item.id);
-    setPreview(response?.data?.data?.image);
-    setForm({
-      ...form,
-      name: response?.data?.data?.name,
-      buyPrice: response?.data?.data?.buyPrice,
-      sellPrice: response?.data?.data?.sellPrice,
-      qty: response?.data?.data?.qty,
-    });
-    setProduct(response.data.data);
-  });
+  // useQuery("productCache", async () => {
+  //   const response = await API.get("/product/" + item.id);
+  //   setPreview(response?.data?.data?.image);
+  //   setForm({
+  //     ...form,
+  //     name: response?.data?.data?.name,
+  //     buyPrice: response?.data?.data?.buyPrice,
+  //     sellPrice: response?.data?.data?.sellPrice,
+  //     qty: response?.data?.data?.qty,
+  //   });
+  //   setProduct(response.data.data);
+  // });
 
   const handleChange = (e) => {
     setForm({
