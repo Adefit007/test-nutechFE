@@ -54,7 +54,8 @@ export default function ModalButtonUpdate({ item }) {
       e.preventDefault();
 
       const formData = new FormData();
-      formData.set("image", form.image[0], form.image[0].name);
+      formData.set("image", form.image[0].name);
+      // formData.set("image", form.image[0], form.image[0].name);
       formData.set("name", form.name);
       formData.set("buyPrice", form.buyPrice);
       formData.set("sellPrice", form.sellPrice);
