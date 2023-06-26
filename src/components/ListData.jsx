@@ -71,7 +71,9 @@ export default function ListData() {
     }
   });
 
-  dataFilter = dataFilter.sort((a, b) => a.id - b.id);
+  if (dataFilter) {
+    dataFilter = dataFilter.sort((a, b) => a.id - b.id);
+  }
 
   return (
     <div>
